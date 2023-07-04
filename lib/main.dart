@@ -9,7 +9,8 @@ void main()
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/':(p0) => LocationScrenn()
+        //'/':(p0) => LocationScrenn(),
+        '/':(p0) => HomeScreen(),
       },
     )
   );

@@ -46,6 +46,47 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               }, child: Text("Camera")),
               SizedBox(height: 40),
+              ElevatedButton(onPressed: () async {
+                var status= await Permission.videos.status;
+                {
+                  if(status.isDenied)
+                  {
+                    await Permission.videos.request();
+                  }
+                  else if(await Permission.videos.isRestricted || await Permission.camera.isPermanentlyDenied)
+                  {
+                    openAppSettings();
+                  }
+                }
+              }, child: Text("Photos & Videos")),
+              SizedBox(height: 40),
+              ElevatedButton(onPressed: () async {
+                var status= await Permission.contacts.status;
+                {
+                  if(status.isDenied)
+                  {
+                    await Permission.contacts.request();
+                  }
+                  else if(await Permission.contacts.isRestricted || await Permission.camera.isPermanentlyDenied)
+                  {
+                    openAppSettings();
+                  }
+                }
+              }, child: Text("Contacts")),
+              SizedBox(height: 40),
+              ElevatedButton(onPressed: () async {
+                var status= await Permission.audio.status;
+                {
+                  if(status.isDenied)
+                  {
+                    await Permission.audio.request();
+                  }
+                  else if(await Permission.audio.isRestricted || await Permission.camera.isPermanentlyDenied)
+                  {
+                    openAppSettings();
+                  }
+                }
+              }, child: Text("Music & Audio")),
             ],
           )
         ],

@@ -6,41 +6,30 @@ import 'package:permission_handler/permission_handler.dart';
 
 class LocationController extends GetxController
 {
-  RxDouble zoom = 11.0.obs;
-  Rx<LatLng> c = LatLng(21.1702,72.8311).obs;
-  Rx<Completer<GoogleMapController>> completer = Completer<GoogleMapController>().obs;
-  Rx<Position> position = Position(longitude: 0, latitude: 0, timestamp: DateTime.now(), accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0).obs;
 
-  Future<void> permission()
+  Rx<MapType> map = MapType.normal.obs;
+  RxDouble lat = 19.0760.obs;
+  RxDouble long = 72.8777.obs;
+  GoogleMapController? googleMapController;
+
+  Future<void> latlong()
   async {
-    var status = Permission.location.status;
+    LocationPermission locationPermission =
+        await Geolocator.requestPermission();
 
-    if(await status.isDenied)
-    {
-      Permission.location.request();
-    }
-    else
-    {
-      return null;
-    }
-
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    lat.value = position.latitude;
+    long.value = position.longitude;
+    googleMapController?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(lat.value, long.value),
+          zoom: 100,
+        ),
+      ),
+    );
   }
 
-  Future<void> currentLocation()
-  async {
-    position.value = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    c.value=LatLng(position.value.latitude, position.value.longitude);
-    update();
-  }
-  RxSet<Marker> Markers()
-  {
-    return {
-      Marker(
-        markerId: MarkerId("Current Position"),
-        position: LatLng(position.value.latitude,position.value.longitude),
-        infoWindow: InfoWindow(title: "Current Position"),
-      )
-    }.obs;
-  }
 
 }
